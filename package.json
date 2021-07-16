@@ -1,0 +1,19 @@
+{
+  "name": "senor-orange",
+  "version": "0.0.1",
+  "description": "It is Senor Orange",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo idk"
+  },
+  "keywords": [
+    "orange"
+  ],
+  "author": "bappy",
+  "license": "ISC",
+  "dependencies": {
+    "chalk": "^4.1.1",
+    "discord.js": "^13.0.0-dev.f200f14.1626436969",
+    "node-fetch": "^2.6.1"
+  }
+}
