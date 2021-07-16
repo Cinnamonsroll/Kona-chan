@@ -10,6 +10,7 @@ globalThis.client = new Discord.Client({
   intents: ["GUILD_MESSAGES", "GUILDS"],
   presence: {
     activities: [{ name: "anime", type: "WATCHING" }],
+    status: "idle",
   },
 });
 
