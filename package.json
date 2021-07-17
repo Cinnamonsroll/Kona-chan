@@ -13,7 +13,7 @@
   "license": "ISC",
   "dependencies": {
     "chalk": "^4.1.1",
-    "discord.js": "^13.0.0-dev.f200f14.1626436969",
+    "discord.js": "github:discordjs/discord.js",
     "node-fetch": "^2.6.1"
   }
 }
