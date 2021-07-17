@@ -15,6 +15,7 @@ globalThis.client = new Discord.Client({
 });
 
 client.commands = new Collection();
+client.categories = new Collection();
 client.cooldowns = new Collection();
 
 require("./handlers/event");

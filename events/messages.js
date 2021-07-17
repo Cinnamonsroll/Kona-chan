@@ -20,7 +20,23 @@ client.on("messageCreate", (message) => {
       (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
     );
 
+  if (!command.category) {
+    command.category = "Empty";
+  }
+
   if (command) {
+    client.commands.forEach((command) => {
+      const category = client.categories.get(command.category);
+      if (category) {
+        category.set(command.name, command);
+      } else {
+        client.categories.set(
+          command.category,
+          new Collection().set(command.name, command)
+        );
+      }
+    });
+
     if (command.ownerOnly && message.author.id !== devID) {
       message.reply(
         "The specified command is restricted to the bot owner only."

@@ -3,6 +3,7 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
   name: "invite",
   aliases: ["inv"],
+  category: "Base",
   desc: "Sends all the possible invite links for the bot.",
   exec(message) {
     const inviteEmbed = new MessageEmbed()
