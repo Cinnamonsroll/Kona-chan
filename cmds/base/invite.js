@@ -7,8 +7,8 @@ module.exports = {
   exec(message) {
     const inviteEmbed = new MessageEmbed()
       .setAuthor(
-        `Invites for ${message.guild.me.displayName}`,
-        client.user.displayAvatarURL()
+        `Invite Links`,
+        message.author.displayAvatarURL({ dynamic: true })
       )
       .setColor("6F94E2")
       .setDescription(
