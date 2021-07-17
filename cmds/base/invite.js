@@ -10,6 +10,7 @@ module.exports = {
         `Invites for ${message.guild.me.displayName}`,
         client.user.displayAvatarURL()
       )
+      .setColor("6F94E2")
       .setDescription(
         "These are all of the possible invites for the bot if ya want.\nOnce the support server like exists, this will be updated with that link aswell, but for now it will just be the bot's links."
       )
