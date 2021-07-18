@@ -1,7 +1,7 @@
 const { Collection } = require("discord.js");
 const { prefix, devID } = require("../config.json");
 
-client.on("messageCreate", (message) => {
+client.on("message", (message) => {
   const botMention = new RegExp(`^<@!?${client.user.id}>( |)$`);
 
   if (message.author.bot) return;
