@@ -7,7 +7,7 @@ client.on("message", (message) => {
   if (message.author.bot) return;
 
   if (message.content === botMention)
-    message.reply(`The prefix is \`${prefix}\``);
+    message.reply(`The prefix is \`${prefix.toUpperCase()}\``);
 
   if (!message.content.startsWith(prefix)) return;
 
@@ -21,7 +21,7 @@ client.on("message", (message) => {
     );
 
   if (!command.category) {
-    command.category = "Empty";
+    command.category = "empty";
   }
 
   if (command) {
