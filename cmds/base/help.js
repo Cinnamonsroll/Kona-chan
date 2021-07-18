@@ -34,17 +34,41 @@ module.exports = {
       if (findCommand) {
         const helpEmbed3 = new MessageEmbed()
           .setAuthor(
-            `Command: ${toProperCase(
-              findCommand.name
-            )}\nCategory: ${toProperCase(findCommand.category)}`,
+            `Command: ${toProperCase(findCommand.name)}`,
             message.author.displayAvatarURL({ dynamic: true })
           )
           .setColor("6F94E2")
           .setDescription(
-            `Aliases: ${
+            `**Aliases:** ${
               findCommand.aliases
                 ? findCommand.aliases.join(" • ")
                 : "No aliases found..."
+            }\n**Category:** ${toProperCase(
+              findCommand.category
+            )}\n\n**Guild Only?** ${
+              findCommand.guildOnly ? "Yes" : "No"
+            }\n**Owner Only?** ${
+              findCommand.ownerOnly ? "Yes" : "No"
+            }\n\n**User Permissions:** ${
+              findCommand.userPermissions
+                ? toProperCase(
+                    findCommand.userPermissions.join(" • ").replace("_", " ")
+                  )
+                : "No user perms required..."
+            }\n**User Permissions:** ${
+              findCommand.botPermissions
+                ? toProperCase(
+                    botCommand.userPermissions.join(" • ").replace("_", " ")
+                  )
+                : "No bot perms required..."
+            }\n\n**Required Arguments:** ${
+              findCommand.requiredArguments
+                ? findCommand.requiredArguments
+                : "No required arguments"
+            }\n**Command Usage:** ${
+              findCommand.usage
+                ? findCommand.usage
+                : "No usage found..."
             }`
           );
 
