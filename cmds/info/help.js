@@ -7,11 +7,11 @@ module.exports = {
   category: "info",
   desc: "Sends a menu for help with commands",
   usage: "[category/command]",
-  async exec(message, args) {
+  async exec(ctx, args) {
     const helpEmbed = new MessageEmbed()
       .setAuthor(
         "Bot's commands",
-        message.author.displayAvatarURL({ dynamic: true })
+        ctx.author.displayAvatarURL({ dynamic: true })
       )
       .setColor("6F94E2")
       .setDescription(
@@ -21,11 +21,11 @@ module.exports = {
           .map((cat, name) => `ㅤ‏‏→ ${toProperCase(name)} (${cat.size})`)
           .join("\n")}**`
       )
-      .setFooter(`Requested by ${message.author.tag}`)
+      .setFooter(`Requested by ${ctx.author.tag}`)
       .setTimestamp();
 
     if (!args.length) {
-      return message.reply({ embeds: [helpEmbed] });
+      return ctx.reply({ embeds: [helpEmbed] });
     } else {
       const findCommand = client.commands.find(
         (c) => c.name === args[0] || (c.aliases && c.aliases.includes(args[0]))
@@ -41,7 +41,7 @@ module.exports = {
             `⌘ ${toProperCase(findCommand.name)}\n⎿ ${toProperCase(
               findCommand.category
             )}`,
-            message.author.displayAvatarURL({ dynamic: true })
+            ctx.author.displayAvatarURL({ dynamic: true })
           )
           .setColor("6F94E2")
           .setDescription(
@@ -79,15 +79,15 @@ module.exports = {
                 : "No required usage..."
             }\``
           )
-          .setFooter(`Requested by ${message.author.tag}`)
+          .setFooter(`Requested by ${ctx.author.tag}`)
           .setTimestamp();
 
-        message.reply({ embeds: [helpEmbed3] });
+        ctx.reply({ embeds: [helpEmbed3] });
       } else if (findCategory) {
         const helpEmbed2 = new MessageEmbed()
           .setAuthor(
             `⌘ ${toProperCase(args[0])}`,
-            message.author.displayAvatarURL({ dynamic: true })
+            ctx.author.displayAvatarURL({ dynamic: true })
           )
           .setColor("6F94E2")
           .setDescription(
@@ -97,10 +97,10 @@ module.exports = {
               .map((command) => command.name)
               .join(", ")}\`\`\``
           )
-          .setFooter(`Requested by ${message.author.tag}`)
+          .setFooter(`Requested by ${ctx.author.tag}`)
           .setTimestamp();
 
-        message.reply({ embeds: [helpEmbed2] });
+        ctx.reply({ embeds: [helpEmbed2] });
       }
     }
   },

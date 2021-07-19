@@ -6,13 +6,13 @@ module.exports = {
   name: "ping",
   category: "info",
   desc: "Sends multiple latency stats for the bot.",
-  async exec(message) {
+  async exec(ctx) {
     const thisTime = Date.now();
     await guildSettings.findOne();
     const total = Date.now() - thisTime;
 
-    const inviteEmbed = new MessageEmbed()
-      .setAuthor("🏓 Pong", message.author.displayAvatarURL({ dynamic: true }))
+    const pingEmbed = new MessageEmbed()
+      .setAuthor("🏓 Pong", ctx.author.displayAvatarURL({ dynamic: true }))
       .setColor("6F94E2")
       .addFields(
         {
@@ -24,19 +24,17 @@ module.exports = {
           value: `${check(total)} ${total}ms`,
         }
       )
-      .setFooter(`Requested by ${message.author.tag}`)
+      .setFooter(`Requested by ${ctx.author.tag}`)
       .setTimestamp();
 
-    const send = await message.reply(
-      "<a:loading:866444788467367947> Loading..."
-    );
+    const send = await ctx.reply("<a:loading:866444788467367947> Loading...");
 
     send.edit({
       embeds: [
-        inviteEmbed.addField(
+        pingEmbed.addField(
           "Edit",
-          `${check(send.createdTimestamp - message.createdTimestamp)} ${
-            send.createdTimestamp - message.createdTimestamp
+          `${check(send.createdTimestamp - ctx.createdTimestamp)} ${
+            send.createdTimestamp - ctx.createdTimestamp
           }ms`
         ),
       ],

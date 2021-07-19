@@ -1,33 +1,41 @@
-const { Collection } = require("discord.js");
+const { Collection, MessageEmbed } = require("discord.js");
 const guildSettings = require("../database/guild");
-const { prefix: gPref, devID } = require("../config.json");
+const { devID, prefix } = require("../config.json");
 const chalk = require("chalk");
 
-client.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
+client.on("messageCreate", async (ctx) => {
+  if (ctx.author.bot) return;
 
   const botMention = new RegExp(`^<@!?${client.user.id}>( |)$`);
-  const findGuild = await guildSettings.findOne({ _id: message.guild.id });
+  const findGuild = await guildSettings.findOne({ _id: ctx.guild.id });
 
-  if (message.content === botMention)
-    message.reply(`The prefix is \`${await findGuild.prefix}\``);
+  if (!findGuild) {
+    const doc = new guildSettings({
+      _id: ctx.guild.id,
+    });
 
-  let prefix;
+    doc.save();
 
-  if (message.guild) {
-    if (message.content.startsWith(gPref)) {
-      prefix = gPref;
-    } else {
-      const guildPrefix = await findGuild.prefix;
-      if (message.content.startsWith(guildPrefix)) prefix = guildPrefix;
-    }
-
-    if (!prefix) return;
-    args = message.content.slice(prefix.length).trim().split(/\s+/);
-  } else {
-    const slice = message.content.startsWith(gPref) ? gPref.length : 0;
-    args = message.content.slice(slice).split(/\s+/);
+    log(
+      "mongo",
+      `${ctx.guild.name} (${ctx.guild.memberCount}) : ${chalk.bold.greenBright(
+        "Added to database"
+      )}`
+    );
+    return;
   }
+
+  if (ctx.content.match(botMention)) {
+    ctx.reply(`The prefix is \`${await findGuild.prefix}\``);
+  }
+
+  if (ctx.guild) {
+    if (!ctx.content.startsWith((await findGuild.prefix) || prefix)) return;
+    args = ctx.content
+      .slice((await findGuild.prefix.length) || prefix.length)
+      .trim()
+      .split(/\s+/);
+  } else return;
 
   const commandName = args.shift().toLowerCase();
 
@@ -46,7 +54,7 @@ client.on("messageCreate", async (message) => {
   if (command) {
     log(
       "cmd",
-      `${message.author.tag} (${message.author.id}) used ${
+      `${ctx.author.tag} (${ctx.author.id}) used ${
         command.name
       } : ${chalk.bold.greenBright("200 OK")}`
     );
@@ -63,54 +71,100 @@ client.on("messageCreate", async (message) => {
       }
     });
 
-    if (command.ownerOnly && message.author.id !== devID) {
-      message.reply("I don't think you are the developer...");
+    if (command.ownerOnly && ctx.author.id !== devID) {
+      const ownerOnly = new MessageEmbed()
+        .setAuthor("Yikes...", ctx.author.displayAvatarURL({ dynamic: true }))
+        .setDescription(
+          "I don't think you are the **bot developer**...\n⁃\n**Err:** notOwner"
+        )
+        .setColor("E04C4C");
+
+      ctx.reply({ embeds: [ownerOnly] });
       return;
     }
 
-    if (command.supportOnly && message.guild.id !== "861269810774802452") {
-      message.reply(`This can only be used in the support server.`);
-      return;
-    }
+    if (command.guildOnly && ctx.channel.type === "DM") return;
 
-    if (command.guildOnly && message.channel.type === "DM") return;
-
-    if (message.channel.type === "GUILD_TEXT") {
+    if (ctx.channel.type === "GUILD_TEXT") {
       if (command.userPermissions) {
-        const userPerms = message.member.permissionsIn(message.channel);
+        const userPerms = ctx.member.permissionsIn(ctx.channel);
 
         if (!userPerms || !userPerms.has(command.userPermissions)) {
-          message.reply(
-            `The specified command requires the permisions \`${command.userPermissions
-              .join(", ")
-              .replace("_", " ")}\`, and you don't have those.`
-          );
+          const permError = new MessageEmbed()
+            .setAuthor(
+              "Yikes...",
+              ctx.author.displayAvatarURL({ dynamic: true })
+            )
+            .setDescription(
+              `The specified command requires the permisions \`${command.userPermissions
+                .join(", ")
+                .replace(
+                  "_",
+                  " "
+                )}\`, and you don't have those.\n⁃\n**Err:** invalidPermissions`
+            )
+            .setColor("E04C4C");
+
+          ctx.reply({ embeds: [permError] });
           return;
         }
       }
 
       if (command.botPermissions) {
-        const botPerms = message.guild.me.permissionsIn(message.channel);
+        const botPerms = ctx.guild.me.permissionsIn(ctx.channel);
 
         if (!botPerms || !botPerms.has(command.botPermissions)) {
-          message.reply(
-            `I need the permissions: \`${command.botPermissions
-              .join(", ")
-              .replace("_", " ")}\`, and you don't have those.`
-          );
+          const permError = new MessageEmbed()
+            .setAuthor(
+              "Yikes...",
+              ctx.author.displayAvatarURL({ dynamic: true })
+            )
+            .setDescription(
+              `I need the permissions: \`${command.botPermissions
+                .join(", ")
+                .replace(
+                  "_",
+                  " "
+                )}\`, but I don't have those.\n⁃\n**Err:** invalidPermissions`
+            )
+            .setColor("E04C4C");
+
+          ctx.reply({ embeds: [permError] });
           return;
         }
       }
 
       if (command.requiredArgs && args.length < command.requiredArgs) {
-        const base = "Invalid usage, please ";
+        let base = "Invalid usage, ";
 
         if (command.usage) {
-          return message.reply(
-            (base += `use \`${prefix}${command.name} ${command.usage}\` instead.`)
-          );
+          const argsError = new MessageEmbed()
+            .setAuthor(
+              "Yikes...",
+              ctx.author.displayAvatarURL({ dynamic: true })
+            )
+            .setDescription(
+              (base += `use \`${await findGuild.prefix}${command.name} ${
+                command.usage
+              }\` instead.\n⁃\n**Err:** invalidUsage`)
+            )
+            .setColor("E04C4C");
+
+          ctx.reply({ embeds: [argsError] });
+          return;
         } else {
-          message.reply((base += "lookup the command on the help menu."));
+          const argsError = new MessageEmbed()
+            .setAuthor(
+              "Yikes...",
+              ctx.author.displayAvatarURL({ dynamic: true })
+            )
+            .setDescription(
+              (base += `lookup the command on the help menu.\n⁃\n**Err:** invalidUsage`)
+            )
+            .setColor("E04C4C");
+
+          ctx.reply({ embeds: [argsError] });
+          return;
         }
       }
     }
@@ -125,27 +179,34 @@ client.on("messageCreate", async (message) => {
     const timestamps = cooldowns.get(command.name);
     const cooldownAmount = (command.cooldown || 3) * 1000;
 
-    if (timestamps.has(message.author.id)) {
-      const expirationTime = timestamps.get(message.author.id) + cooldownAmount;
+    if (timestamps.has(ctx.author.id)) {
+      const expirationTime = timestamps.get(ctx.author.id) + cooldownAmount;
 
       if (now < expirationTime) {
         const timeLeft = (expirationTime - now) / 1000;
-        message.reply(
-          `There ${
-            timeLeft.toFixed(1) === 1
-              ? `is \`${timeLeft.toFixed(1)} second\``
-              : `are \`${timeLeft.toFixed(1)} seconds\``
-          } remaining on the cooldown.`
-        );
+
+        const cooldownError = new MessageEmbed()
+          .setAuthor("Yikes...", ctx.author.displayAvatarURL({ dynamic: true }))
+          .setDescription(
+            `There ${
+              timeLeft.toFixed(1) === 1
+                ? `is \`${timeLeft.toFixed(1)} second\``
+                : `are \`${timeLeft.toFixed(1)} seconds\``
+            } remaining on the cooldown.\n⁃\n**Err:** invalidUsage`
+          )
+          .setColor("E04C4C");
+
+        ctx.reply({ embeds: [cooldownError] });
+
         return;
       }
     }
 
-    timestamps.set(message.author.id, now);
-    setTimeout(() => timestamps.delete(message.author.id), cooldownAmount);
+    timestamps.set(ctx.author.id, now);
+    setTimeout(() => timestamps.delete(ctx.author.id), cooldownAmount);
 
     try {
-      command.exec(message, args);
+      command.exec(ctx, args);
     } catch (err) {
       log("error", err);
     }

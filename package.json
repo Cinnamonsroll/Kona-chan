@@ -1,13 +1,14 @@
 {
-  "name": "senor-orange",
+  "name": "kona-chan",
   "version": "0.0.1",
-  "description": "It is Senor Orange",
+  "description": "It is Kona-chan",
   "main": "index.js",
   "scripts": {
     "test": "echo idk"
   },
   "keywords": [
-    "orange"
+    "anime",
+    "discordjs"
   ],
   "author": "bappy",
   "license": "ISC",
