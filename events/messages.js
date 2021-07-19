@@ -1,17 +1,34 @@
 const { Collection } = require("discord.js");
-const { prefix, devID } = require("../config.json");
+const guildSettings = require("../database/guild");
+const { prefix: gPref, devID } = require("../config.json");
+const chalk = require("chalk");
 
-client.on("message", (message) => {
-  const botMention = new RegExp(`^<@!?${client.user.id}>( |)$`);
-
+client.on("messageCreate", async (message) => {
   if (message.author.bot) return;
 
+  const botMention = new RegExp(`^<@!?${client.user.id}>( |)$`);
+  const findGuild = await guildSettings.findOne({ _id: message.guild.id });
+
   if (message.content === botMention)
-    message.reply(`The prefix is \`${prefix.toUpperCase()}\``);
+    message.reply(`The prefix is \`${await findGuild.prefix}\``);
 
-  if (!message.content.startsWith(prefix)) return;
+  let prefix;
 
-  const args = message.content.slice(prefix.length).trim().split(/ +/g);
+  if (message.guild) {
+    if (message.content.startsWith(gPref)) {
+      prefix = gPref;
+    } else {
+      const guildPrefix = await findGuild.prefix;
+      if (message.content.startsWith(guildPrefix)) prefix = guildPrefix;
+    }
+
+    if (!prefix) return;
+    args = message.content.slice(prefix.length).trim().split(/\s+/);
+  } else {
+    const slice = message.content.startsWith(gPref) ? gPref.length : 0;
+    args = message.content.slice(slice).split(/\s+/);
+  }
+
   const commandName = args.shift().toLowerCase();
 
   const command =
@@ -20,11 +37,20 @@ client.on("message", (message) => {
       (cmd) => cmd.aliases && cmd.aliases.includes(commandName)
     );
 
+  if (!command) return;
+
   if (!command.category) {
-    command.category = "empty";
+    command.category = "none";
   }
 
   if (command) {
+    log(
+      "cmd",
+      `${message.author.tag} (${message.author.id}) used ${
+        command.name
+      } : ${chalk.bold.greenBright("200 OK")}`
+    );
+
     client.commands.forEach((command) => {
       const category = client.categories.get(command.category);
       if (category) {
@@ -38,11 +64,15 @@ client.on("message", (message) => {
     });
 
     if (command.ownerOnly && message.author.id !== devID) {
-      message.reply(
-        "The specified command is restricted to the bot owner only."
-      );
+      message.reply("I don't think you are the developer...");
       return;
     }
+
+    if (command.supportOnly && message.guild.id !== "861269810774802452") {
+      message.reply(`This can only be used in the support server.`);
+      return;
+    }
+
     if (command.guildOnly && message.channel.type === "DM") return;
 
     if (message.channel.type === "GUILD_TEXT") {
@@ -52,7 +82,7 @@ client.on("message", (message) => {
         if (!userPerms || !userPerms.has(command.userPermissions)) {
           message.reply(
             `The specified command requires the permisions \`${command.userPermissions
-              .join(" • ")
+              .join(", ")
               .replace("_", " ")}\`, and you don't have those.`
           );
           return;
@@ -65,7 +95,7 @@ client.on("message", (message) => {
         if (!botPerms || !botPerms.has(command.botPermissions)) {
           message.reply(
             `I need the permissions: \`${command.botPermissions
-              .join(" • ")
+              .join(", ")
               .replace("_", " ")}\`, and you don't have those.`
           );
           return;

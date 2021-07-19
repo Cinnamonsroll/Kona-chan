@@ -21,24 +21,32 @@ function log(type = "log", data = null, time = true) {
   }
 
   function template(prefix) {
-    return console.log(`${timeCheck()} ${prefix}: ${data}`);
+    return console.log(`${timeCheck()} ⎇ ${prefix} → ${data}`);
   }
 
   switch (type) {
     case "log":
-      return template(toColor("LOG", "bgGray"));
+      return template(toColor("LOG", "#4C57E0", "hex"));
     case "error":
-      return template(toColor("ERROR", "bgRed"));
+      return template(toColor("ERROR", "#E04C4C", "hex"));
     case "warn":
-      return template(toColor("WARNING", "bgYellow"));
+      return template(toColor("WARNING", "#E04C4C", "hex"));
     case "info":
-      return template(toColor("INFO", "bgBlue"));
+      return template(toColor("INFO", "#4C57E0", "hex"));
     case "verbose":
-      return template(toColor("VERBOSE", "bgCyan"));
+      return template(toColor("VERBOSE", "#4C57E0", "hex"));
     case "debug":
-      return template(toColor("DEBUG", "bgMagenta"));
-    case "silly":
-      return template(toColor("SiLlY", "bgGreen"));
+      return template(toColor("DEBUG", "#A84CE0", "hex"));
+    case "mongo":
+      return template(toColor("DATABASE", "#249225", "hex"));
+    case "cmd":
+      return template(toColor("COMMAND", "#FF69B4", "hex"));
+    case "cat":
+      return template(toColor("CATEGORY", "#FF69B4", "hex"));
+    case "event":
+      return template(toColor("EVENT", "#E0BC4C", "hex"));
+    case "setup":
+      return template(toColor("SETUP", "#4CCCE0", "hex"));
   }
 }
 

@@ -52,13 +52,13 @@ module.exports = {
             }\`\n\n**→ Bot Permissions** - \`${
               findCommand.botPermissions
                 ? toProperCase(
-                    findCommand.botPermissions.join(" ・ ").replace("_", " ")
+                    findCommand.botPermissions.join(", ").replace("_", " ")
                   )
                 : "No permissions required..."
             }\`\n**→ User Permissions** - \`${
               findCommand.userPermissions
                 ? toProperCase(
-                    findCommand.userPermissions.join(" ・ ").replace("_", " ")
+                    findCommand.userPermissions.join(", ").replace("_", " ")
                   )
                 : "No permissions required..."
             }\`\n\n**→ Location Status** - \`${
@@ -95,7 +95,7 @@ module.exports = {
               this.usage
             }\` to search for a command or category\n\`\`\`fix\n${findCategory
               .map((command) => command.name)
-              .join(" ・ ")}\`\`\``
+              .join(", ")}\`\`\``
           )
           .setFooter(`Requested by ${message.author.tag}`)
           .setTimestamp();

@@ -3,7 +3,7 @@ const { MessageEmbed } = require("discord.js");
 module.exports = {
   name: "invite",
   aliases: ["inv"],
-  category: "bot",
+  category: "info",
   desc: "Sends all the possible invite links for the bot.",
   exec(message) {
     const inviteEmbed = new MessageEmbed()
@@ -18,7 +18,7 @@ module.exports = {
       .addFields({
         name: "Permission Based",
         value:
-          "These are based on what permissions you need for the bot.\n\n• **[Minimum Permissions (recommended)](https://discord.com/oauth2/authorize?client_id=865601109842198528&permissions=347200&scope=bot)**\n• **[No Permissions](https://discord.com/oauth2/authorize?client_id=865601109842198528&scope=bot)**\n• **[Administrative Permissions](https://discord.com/oauth2/authorize?client_id=865601109842198528&permissions=8&scope=bot)**",
+          "These are based on what permissions you need for the bot.\n\n• **[Minimum Permissions (recommended)](https://discord.com/oauth2/authorize?client_id=865601109842198528&permissions=379968&scope=bot)**\n• **[No Permissions](https://discord.com/oauth2/authorize?client_id=865601109842198528&scope=bot)**\n• **[Administrative Permissions](https://discord.com/oauth2/authorize?client_id=865601109842198528&permissions=8&scope=bot)**",
       })
       .setFooter(`Requested by ${message.author.tag}`)
       .setTimestamp();
