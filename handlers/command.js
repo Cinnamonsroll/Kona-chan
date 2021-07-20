@@ -12,7 +12,7 @@ if (!commandFolders.length) {
 for (const folder of commandFolders) {
   const commandFiles = fs
     .readdirSync(`./cmds/${folder}`)
-    .filter((file) => file.endsWith(".js"));
+    .filter((file) => file.endsWith(".js") || file.endsWith(".ts"));
 
   log(
     "cat",

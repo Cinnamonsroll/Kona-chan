@@ -205,10 +205,6 @@ client.on("messageCreate", async (ctx) => {
     timestamps.set(ctx.author.id, now);
     setTimeout(() => timestamps.delete(ctx.author.id), cooldownAmount);
 
-    try {
-      command.exec(ctx, args);
-    } catch (err) {
-      log("error", err);
-    }
+    command.exec(ctx, args).catch((a) => log("error", a));
   }
 });

@@ -10,4 +10,4 @@ As of right now, development is currently focused on the `blob` branch. However,
 
 ## Reporting a Vulnerability
 
-You can create an issue **OR** send a message in the discord server in the `kona-chan-support` channel.
+You can send an email to bappityboppity@outlook.com, though whatever you do, please don't report security vulnerabilities in the Issues tab or attempt to fix them yourself in the Pull Requests.

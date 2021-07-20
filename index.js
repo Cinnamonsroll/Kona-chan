@@ -8,7 +8,7 @@ globalThis.log = log;
 
 globalThis.client = new Discord.Client({
   allowedMentions: { repliedUser: false },
-  intents: ["GUILD_MESSAGES", "GUILDS"],
+  intents: ["GUILD_MESSAGES", "GUILDS", "GUILD_MESSAGE_REACTIONS"],
   presence: {
     activities: [{ name: "anime", type: "WATCHING" }],
     status: "idle",

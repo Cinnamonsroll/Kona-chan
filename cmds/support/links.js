@@ -16,7 +16,7 @@ module.exports = {
         {
           name: "Permission Based",
           value:
-            "• **[Minimum Permissions (recommended)](https://discord.com/oauth2/authorize?client_id=865601109842198528&permissions=379968&scope=bot)**\n• **[No Permissions](https://discord.com/oauth2/authorize?client_id=865601109842198528&scope=bot)**\n• **[Administrative Permissions](https://discord.com/oauth2/authorize?client_id=865601109842198528&permissions=8&scope=bot)**",
+            "• **[Minimum Permissions (recommended)](https://discord.com/oauth2/authorize?client_id=865601109842198528&permissions=388160&scope=bot)**\n• **[No Permissions](https://discord.com/oauth2/authorize?client_id=865601109842198528&scope=bot)**\n• **[Administrative Permissions](https://discord.com/oauth2/authorize?client_id=865601109842198528&permissions=8&scope=bot)**",
         },
         {
           name: "Extras Links",

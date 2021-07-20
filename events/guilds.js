@@ -16,10 +16,6 @@ client.on("guildCreate", (guild) => {
       "Added to database"
     )}`
   );
-
-  channel.send(
-    `<:join:866435133536337930> Joined \`${guild.name}\` w/ ${guild.memberCount} members`
-  );
 });
 
 client.on("guildDelete", (guild) => {
@@ -30,9 +26,5 @@ client.on("guildDelete", (guild) => {
     `${guild.name} (${guild.memberCount}) : ${chalk.bold.hex("#E04C4C")(
       "Removed from database"
     )}`
-  );
-
-  channel.send(
-    `<:leave:866435280642113567> Left \`${guild.name}\` w/ ${guild.memberCount} members`
   );
 });

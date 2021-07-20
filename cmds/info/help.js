@@ -1,38 +1,59 @@
 const { MessageEmbed } = require("discord.js");
 const toProperCase = require("../../scripts/to_");
+const { paginate } = require("../../scripts/random_bot");
 
 module.exports = {
   name: "help",
   aliases: ["h", "halp", "helpme", "?", "commands", "cmds"],
   category: "info",
   desc: "Sends a menu for help with commands",
-  usage: "[category/command]",
+  usage: "[command]",
   async exec(ctx, args) {
-    const helpEmbed = new MessageEmbed()
-      .setAuthor(
-        "Bot's commands",
-        ctx.author.displayAvatarURL({ dynamic: true })
-      )
-      .setColor("6F94E2")
-      .setDescription(
-        `\`\`\`fix\nYou can use "${this.name} ${
+    let pages = [
+      new MessageEmbed({
+        author: {
+          name: "Bot's commands",
+          icon_url: ctx.author.displayAvatarURL({ dynamic: true }),
+        },
+        color: "6F94E2",
+        description: `\`\`\`fix\nYou can use "${this.name} ${
           this.usage
-        }" to search for a command or category\`\`\`\n**Available Categories**\n**${client.categories
+        }" to search for a command\`\`\`\n**Available Categories**\n**${client.categories
           .map((cat, name) => `ㅤ‏‏→ ${toProperCase(name)} (${cat.size})`)
-          .join("\n")}**`
-      )
-      .setFooter(`Requested by ${ctx.author.tag}`)
-      .setTimestamp();
+          .join("\n")}**`,
+        timestamp: new Date(),
+        footer: {
+          text: `Requested by ${ctx.author.tag}`,
+        },
+      }),
+    ];
+
+    client.categories.forEach((c, n) => {
+      pages.push(
+        new MessageEmbed({
+          author: {
+            name: `⌘ ${toProperCase(n)}`,
+            icon_url: ctx.author.displayAvatarURL({ dynamic: true }),
+          },
+          color: "6F94E2",
+          description: `You can use \`${this.name} ${
+            this.usage
+          }\` to search for a command\n\`\`\`fix\n${c
+            .map((c) => c.name)
+            .join(", ")}\`\`\``,
+          timestamp: new Date(),
+          footer: {
+            text: `Requested by ${ctx.author.tag}`,
+          },
+        })
+      );
+    });
 
     if (!args.length) {
-      return ctx.reply({ embeds: [helpEmbed] });
+      paginate(ctx, pages, pages.length - 1);
     } else {
       const findCommand = client.commands.find(
         (c) => c.name === args[0] || (c.aliases && c.aliases.includes(args[0]))
-      );
-
-      const findCategory = client.categories.find(
-        (c, n) => n === args[0].toLowerCase()
       );
 
       if (findCommand) {
@@ -83,24 +104,6 @@ module.exports = {
           .setTimestamp();
 
         ctx.reply({ embeds: [helpEmbed3] });
-      } else if (findCategory) {
-        const helpEmbed2 = new MessageEmbed()
-          .setAuthor(
-            `⌘ ${toProperCase(args[0])}`,
-            ctx.author.displayAvatarURL({ dynamic: true })
-          )
-          .setColor("6F94E2")
-          .setDescription(
-            `You can use \`${this.name} ${
-              this.usage
-            }\` to search for a command or category\n\`\`\`fix\n${findCategory
-              .map((command) => command.name)
-              .join(", ")}\`\`\``
-          )
-          .setFooter(`Requested by ${ctx.author.tag}`)
-          .setTimestamp();
-
-        ctx.reply({ embeds: [helpEmbed2] });
       }
     }
   },

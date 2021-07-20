@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const check = require("../../scripts/random_bot");
+const { check } = require("../../scripts/random_bot");
 const guildSettings = require("../../database/guild");
 
 module.exports = {

@@ -1,5 +1,5 @@
 const { MessageEmbed } = require("discord.js");
-const check = require("../../scripts/random_bot");
+const { check } = require("../../scripts/random_bot");
 const guildSettings = require("../../database/guild");
 
 module.exports = {
@@ -12,7 +12,7 @@ module.exports = {
     const total = Date.now() - thisTime;
 
     const pingEmbed = new MessageEmbed()
-      .setAuthor("🏓 Pong", ctx.author.displayAvatarURL({ dynamic: true }))
+      .setAuthor("Pong!", ctx.author.displayAvatarURL({ dynamic: true }))
       .setColor("6F94E2")
       .addFields(
         {
