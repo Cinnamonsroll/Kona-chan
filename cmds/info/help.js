@@ -16,9 +16,10 @@ module.exports = {
           icon_url: ctx.author.displayAvatarURL({ dynamic: true }),
         },
         color: "6F94E2",
-        description: `\`\`\`fix\nYou can use "${this.name} ${
+        description: `\`\`\`q\nYou can use "${this.name} ${
           this.usage
         }" to search for a command\`\`\`\n**Available Categories**\n**${client.categories
+          .filter((c, name) => name !== "developer")
           .map((cat, name) => `ㅤ‏‏→ ${toProperCase(name)} (${cat.size})`)
           .join("\n")}**`,
         timestamp: new Date(),
@@ -28,33 +29,38 @@ module.exports = {
       }),
     ];
 
-    client.categories.forEach((c, n) => {
-      pages.push(
-        new MessageEmbed({
-          author: {
-            name: `⌘ ${toProperCase(n)}`,
-            icon_url: ctx.author.displayAvatarURL({ dynamic: true }),
-          },
-          color: "6F94E2",
-          description: `You can use \`${this.name} ${
-            this.usage
-          }\` to search for a command\n\`\`\`fix\n${c
-            .map((c) => c.name)
-            .join(", ")}\`\`\``,
-          timestamp: new Date(),
-          footer: {
-            text: `Requested by ${ctx.author.tag}`,
-          },
-        })
-      );
-    });
+    client.categories
+      .filter((c, name) => name !== "developer")
+      .forEach((c, n) => {
+        pages.push(
+          new MessageEmbed({
+            author: {
+              name: `⌘ ${toProperCase(n)}`,
+              icon_url: ctx.author.displayAvatarURL({ dynamic: true }),
+            },
+            color: "6F94E2",
+            description: `You can use \`${this.name} ${
+              this.usage
+            }\` to search for a command\n\`\`\`fix\n${c
+              .map((c) => c.name)
+              .join(", ")}\`\`\``,
+            timestamp: new Date(),
+            footer: {
+              text: `Requested by ${ctx.author.tag}`,
+            },
+          })
+        );
+      });
 
     if (!args.length) {
       paginate(ctx, pages, pages.length - 1);
     } else {
-      const findCommand = client.commands.find(
-        (c) => c.name === args[0] || (c.aliases && c.aliases.includes(args[0]))
-      );
+      const findCommand = client.commands
+        .find(
+          (c) =>
+            c.name === args[0] || (c.aliases && c.aliases.includes(args[0]))
+        )
+        .filter((c) => c.category !== "developer");
 
       if (findCommand) {
         const helpEmbed3 = new MessageEmbed()
