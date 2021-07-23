@@ -26,8 +26,8 @@ client.commands = new Collection();
 client.categories = new Collection();
 client.cooldowns = new Collection();
 
-require("./handlers/event");
-require("./handlers/command");
-require("./handlers/database");
+for(let handler of require("fs").readdirSync("./handlers.js")){
+require(handler)
+}
 
 client.login(token);
